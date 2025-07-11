@@ -47,9 +47,14 @@
         answer: "Mi madre tiene cuarenta y ocho años."
       },
       {
-        es: "¿Dónde vives / viven tus primos, padres, etc.?",
-        ja: "あなた（や家族、親戚）はどこに住んでいますか？",
-        answer: "Vivo en Tokio y mis padres viven en Osaka."
+        es: "¿Dónde vives?",
+        ja: "あなたはどこに住んでいますか？",
+        answer: "Vivo en Tokio."
+      },
+      {
+        es: "¿Dónde viven tus primos?",
+        ja: "あなたのいとこはどこに住んでいますか？",
+        answer: "Mis primos viven en Osaka."
       },
       {
         es: "¿Qué haces los viernes?",
@@ -211,15 +216,20 @@
       currentQuestion = questions[Math.floor(Math.random() * questions.length)];
       document.getElementById("question").textContent = "📘 " + currentQuestion.es;
 
+      showTranslation = false;
       const translationDiv = document.getElementById("translation");
       translationDiv.textContent = "🇯🇵 " + currentQuestion.ja;
-      translationDiv.style.display = showTranslation ? "block" : "none";
+      translationDiv.style.display = "none";
+      document.getElementById("toggle-translation").textContent = "日本語訳を表示";
 
-      const answerDiv = document.getElementById("answer");
-      answerDiv.textContent = currentQuestion.answer || "";
-      answerDiv.style.display = "none";
       showAnswer = false;
-
+      const answerDiv = document.getElementById("answer");
+      if(currentQuestion.answer){
+        answerDiv.textContent = "例： " + currentQuestion.answer;
+      } else {
+        answerDiv.textContent = "";
+      }
+      answerDiv.style.display = "none";
       const answerBtn = document.getElementById("toggle-answer");
       answerBtn.disabled = !currentQuestion.answer;
       answerBtn.textContent = "答えを表示";
