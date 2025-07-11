@@ -7,174 +7,224 @@
     body { font-family: sans-serif; text-align: center; padding: 30px; }
     button { padding: 10px 20px; font-size: 16px; margin: 5px; }
     #question { font-size: 24px; margin: 20px; color: #333; }
-    #translation { font-size: 18px; color: #666; display: none; }
+    #translation, #answer { font-size: 18px; color: #666; display: none; margin-top: 10px; }
   </style>
 </head>
 <body>
   <h1>ランダム会話練習（スペイン語＆日本語訳付き）</h1>
   <div id="question">🎲 ボタンを押して質問を表示！</div>
   <div id="translation"></div>
+  <div id="answer"></div>
   <button onclick="generateQuestion()">質問を表示＆音声再生</button>
   <button id="toggle-translation" onclick="toggleTranslation()">日本語訳を表示</button>
+  <button id="toggle-answer" onclick="toggleAnswer()" disabled>答えを表示</button>
 
   <script>
     const questions = [
       {
         es: "¿Cómo se llama tu profesor/a de español?",
-        ja: "あなたのスペイン語の先生の名前は何ですか？"
+        ja: "あなたのスペイン語の先生の名前は何ですか？",
+        answer: "Mi profesora se llama Ana."
       },
       {
         es: "¿Cuántos años tienes?",
-        ja: "あなたは何歳ですか？"
+        ja: "あなたは何歳ですか？",
+        answer: "Tengo veinte años."
       },
       {
         es: "¿Cuántos años tiene tu hermano?",
-        ja: "あなたの兄弟は何歳ですか？"
+        ja: "あなたの兄弟は何歳ですか？",
+        answer: "Mi hermano tiene veinte años."
       },
       {
         es: "¿Cuántos años tiene tu padre?",
-        ja: "あなたのお父さんは何歳ですか？"
+        ja: "あなたのお父さんは何歳ですか？",
+        answer: "Mi padre tiene cincuenta años."
       },
       {
         es: "¿Cuántos años tiene tu madre?",
-        ja: "あなたのお母さんは何歳ですか？"
+        ja: "あなたのお母さんは何歳ですか？",
+        answer: "Mi madre tiene cuarenta y ocho años."
       },
       {
         es: "¿Dónde vives / viven tus primos, padres, etc.?",
-        ja: "あなた（や家族、親戚）はどこに住んでいますか？"
+        ja: "あなた（や家族、親戚）はどこに住んでいますか？",
+        answer: "Vivo en Tokio y mis padres viven en Osaka."
       },
       {
         es: "¿Qué haces los viernes?",
-        ja: "金曜日には何をしますか？"
+        ja: "金曜日には何をしますか？",
+        answer: "Los viernes estudio español y salgo con amigos."
       },
       {
         es: "¿Qué haces los sábados?",
-        ja: "土曜日には何をしますか？"
+        ja: "土曜日には何をしますか？",
+        answer: "Los sábados trabajo en una cafetería."
       },
       {
         es: "¿Qué haces los domingos?",
-        ja: "日曜日には何をしますか？"
+        ja: "日曜日には何をしますか？",
+        answer: "Los domingos descanso y leo libros."
       },
       {
         es: "¿Qué haces en otros días?",
-        ja: "他の日には何をしますか？"
+        ja: "他の日には何をしますか？",
+        answer: "En otros días voy al gimnasio y cocino."
       },
       {
         es: "¿Qué te gusta hacer los fines de semana?",
-        ja: "週末に何をするのが好きですか？"
+        ja: "週末に何をするのが好きですか？",
+        answer: "Me gusta salir con amigos y ver películas."
       },
       {
         es: "¿Qué lenguas hablas?",
-        ja: "どんな言語を話しますか？"
+        ja: "どんな言語を話しますか？",
+        answer: "Hablo japonés, español e inglés."
       },
       {
         es: "¿Qué hora es?",
-        ja: "今何時ですか？"
+        ja: "今何時ですか？",
+        answer: "Son las tres de la tarde."
       },
       {
         es: "¿A qué hora te levantas normalmente?",
-        ja: "普段何時に起きますか？"
+        ja: "普段何時に起きますか？",
+        answer: "Normalmente me levanto a las siete."
       },
       {
         es: "¿A qué hora te acuestas normalmente?",
-        ja: "普段何時に寝ますか？"
+        ja: "普段何時に寝ますか？",
+        answer: "Normalmente me acuesto a las diez."
       },
       {
         es: "¿A qué hora te duchas normalmente?",
-        ja: "普段何時にシャワーを浴びますか？"
+        ja: "普段何時にシャワーを浴びますか？",
+        answer: "Me ducho a las ocho de la mañana."
       },
       {
         es: "¿Dónde está tu universidad?",
-        ja: "あなたの大学はどこにありますか？"
+        ja: "あなたの大学はどこにありますか？",
+        answer: "Mi universidad está en Tokio."
       },
       {
         es: "¿Dónde comes normalmente y con quién?",
-        ja: "普段どこで、誰と食事をしますか？"
+        ja: "普段どこで、誰と食事をしますか？",
+        answer: "Normalmente como en la cafetería con mis amigos."
       },
       {
         es: "¿Qué sabes hacer?",
-        ja: "あなたは何ができますか？（何が得意ですか？）"
+        ja: "あなたは何ができますか？（何が得意ですか？）",
+        answer: "Sé tocar la guitarra y cocinar bien."
       },
       {
         es: "¿Cuándo es tu cumpleaños?",
-        ja: "あなたの誕生日はいつですか？"
+        ja: "あなたの誕生日はいつですか？",
+        answer: "Mi cumpleaños es el cinco de mayo."
       },
       {
         es: "¿Cómo eres tú?",
-        ja: "あなたはどんな人ですか？"
+        ja: "あなたはどんな人ですか？",
+        answer: "Soy amable, tranquilo y trabajador."
       },
       {
         es: "¿Cómo es tu amigo?",
-        ja: "あなたの友達はどんな人ですか？"
+        ja: "あなたの友達はどんな人ですか？",
+        answer: "Mi amigo es divertido y muy inteligente."
       },
       {
         es: "¿Cómo es tu madre?",
-        ja: "あなたのお母さんはどんな人ですか？"
+        ja: "あなたのお母さんはどんな人ですか？",
+        answer: "Mi madre es cariñosa y trabajadora."
       },
       {
         es: "¿Qué hay en tu casa?",
-        ja: "あなたの家には何がありますか？"
+        ja: "あなたの家には何がありますか？",
+        answer: "En mi casa hay un sofá, una mesa y muchas plantas."
       },
       {
         es: "¿Qué hay en tu dormitorio?",
-        ja: "あなたの部屋には何がありますか？"
+        ja: "あなたの部屋には何がありますか？",
+        answer: "En mi dormitorio hay una cama, un escritorio y un armario."
       },
       {
         es: "¿Qué hay en tu salón?",
-        ja: "あなたのリビングには何がありますか？"
+        ja: "あなたのリビングには何がありますか？",
+        answer: "En mi salón hay una televisión y un sofá grande."
       },
       {
         es: "¿Cómo se dice ______ en español?",
-        ja: "_______はスペイン語で何と言いますか？"
+        ja: "_______はスペイン語で何と言いますか？",
+        answer: "Por ejemplo, 'manzana' se dice 'manzana'."
       },
       {
         es: "¿Cómo se escribe tu nombre/ apellido?",
-        ja: "あなたの名前／名字はどう書きますか？"
+        ja: "あなたの名前／名字はどう書きますか？",
+        answer: "Mi nombre se escribe A-N-R-I."
       },
       {
         es: "¿Dónde tomas café?",
-        ja: "どこでコーヒーを飲みますか？"
+        ja: "どこでコーヒーを飲みますか？",
+        answer: "Tomo café en la cafetería cerca de mi casa."
       },
       {
         es: "¿Dónde te lavas los dientes?",
-        ja: "どこで歯を磨きますか？"
+        ja: "どこで歯を磨きますか？",
+        answer: "Me lavo los dientes en el baño."
       },
       {
         es: "¿Dónde escuchas música?",
-        ja: "どこで音楽を聴きますか？"
+        ja: "どこで音楽を聴きますか？",
+        answer: "Escucho música en mi habitación y en el autobús."
       },
       {
         es: "¿Cuándo vienes a la universidad?",
-        ja: "いつ大学に来ますか？"
+        ja: "いつ大学に来ますか？",
+        answer: "Vengo a la universidad por la mañana."
       },
       {
         es: "¿Cómo vuelves a casa?",
-        ja: "どうやって家に帰りますか？"
+        ja: "どうやって家に帰りますか？",
+        answer: "Vuelvo a casa en bicicleta."
       },
       {
         es: "¿De dónde es Pablo Picasso?",
-        ja: "パブロ・ピカソはどこの出身ですか？"
+        ja: "パブロ・ピカソはどこの出身ですか？",
+        answer: "Pablo Picasso es de España."
       },
       {
         es: "¿De dónde es William Shakespeare?",
-        ja: "ウィリアム・シェイクスピアはどこの出身ですか？"
+        ja: "ウィリアム・シェイクスピアはどこの出身ですか？",
+        answer: "William Shakespeare es de Inglaterra."
       },
       {
         es: "¿De dónde es Umeko Tsuda?",
-        ja: "津田梅子はどこの出身ですか？"
+        ja: "津田梅子はどこの出身ですか？",
+        answer: "Umeko Tsuda es de Japón."
       }
     ];
 
     let showTranslation = false;
+    let showAnswer = false;
+    let currentQuestion = null;
 
     function generateQuestion() {
-      const random = questions[Math.floor(Math.random() * questions.length)];
-      document.getElementById("question").textContent = "📘 " + random.es;
+      currentQuestion = questions[Math.floor(Math.random() * questions.length)];
+      document.getElementById("question").textContent = "📘 " + currentQuestion.es;
+
       const translationDiv = document.getElementById("translation");
-      translationDiv.textContent = "🇯🇵 " + random.ja;
+      translationDiv.textContent = "🇯🇵 " + currentQuestion.ja;
       translationDiv.style.display = showTranslation ? "block" : "none";
 
-      const utterance = new SpeechSynthesisUtterance(random.es);
+      const answerDiv = document.getElementById("answer");
+      answerDiv.textContent = currentQuestion.answer || "";
+      answerDiv.style.display = "none";
+      showAnswer = false;
+
+      const answerBtn = document.getElementById("toggle-answer");
+      answerBtn.disabled = !currentQuestion.answer;
+      answerBtn.textContent = "答えを表示";
+
+      const utterance = new SpeechSynthesisUtterance(currentQuestion.es);
       utterance.lang = 'es-ES';
       speechSynthesis.speak(utterance);
     }
@@ -184,6 +234,13 @@
       const translationDiv = document.getElementById("translation");
       translationDiv.style.display = showTranslation ? "block" : "none";
       document.getElementById("toggle-translation").textContent = showTranslation ? "日本語訳を隠す" : "日本語訳を表示";
+    }
+
+    function toggleAnswer() {
+      showAnswer = !showAnswer;
+      const answerDiv = document.getElementById("answer");
+      answerDiv.style.display = showAnswer ? "block" : "none";
+      document.getElementById("toggle-answer").textContent = showAnswer ? "答えを隠す" : "答えを表示";
     }
   </script>
 </body>
