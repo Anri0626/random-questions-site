@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>スペイン語質問練習</title>
   <style>
     body { font-family: sans-serif; text-align: center; padding: 30px; }
-    button { padding: 10px 20px; font-size: 16px; }
+    button { padding: 10px 20px; font-size: 16px; margin: 5px; }
     #question { font-size: 24px; margin: 20px; color: #333; }
-    #translation { font-size: 18px; color: #666; }
+    #translation { font-size: 18px; color: #666; display: none; }
   </style>
 </head>
 <body>
@@ -15,6 +15,7 @@
   <div id="question">🎲 ボタンを押して質問を表示！</div>
   <div id="translation"></div>
   <button onclick="generateQuestion()">質問を表示＆音声再生</button>
+  <button id="toggle-translation" onclick="toggleTranslation()">日本語訳を表示</button>
 
   <script>
     const questions = [
@@ -23,16 +24,40 @@
         ja: "あなたのスペイン語の先生の名前は何ですか？"
       },
       {
-        es: "¿Cuántos años tienes / tiene tu hermano/a, padre, madre, etc.?",
-        ja: "あなた（または家族）の年齢はいくつですか？"
+        es: "¿Cuántos años tienes?",
+        ja: "あなたは何歳ですか？"
+      },
+      {
+        es: "¿Cuántos años tiene tu hermano?",
+        ja: "あなたの兄弟は何歳ですか？"
+      },
+      {
+        es: "¿Cuántos años tiene tu padre?",
+        ja: "あなたのお父さんは何歳ですか？"
+      },
+      {
+        es: "¿Cuántos años tiene tu madre?",
+        ja: "あなたのお母さんは何歳ですか？"
       },
       {
         es: "¿Dónde vives / viven tus primos, padres, etc.?",
         ja: "あなた（や家族、親戚）はどこに住んでいますか？"
       },
       {
-        es: "¿Qué haces los viernes / sábados / domingos, etc.?",
-        ja: "金曜日・土曜日・日曜日には何をしますか？"
+        es: "¿Qué haces los viernes?",
+        ja: "金曜日には何をしますか？"
+      },
+      {
+        es: "¿Qué haces los sábados?",
+        ja: "土曜日には何をしますか？"
+      },
+      {
+        es: "¿Qué haces los domingos?",
+        ja: "日曜日には何をしますか？"
+      },
+      {
+        es: "¿Qué haces en otros días?",
+        ja: "他の日には何をしますか？"
       },
       {
         es: "¿Qué te gusta hacer los fines de semana?",
@@ -47,8 +72,16 @@
         ja: "今何時ですか？"
       },
       {
-        es: "¿A qué hora te levantas / te acuestas / te duchas normalmente?",
-        ja: "普段何時に起きますか？寝ますか？シャワーを浴びますか？"
+        es: "¿A qué hora te levantas normalmente?",
+        ja: "普段何時に起きますか？"
+      },
+      {
+        es: "¿A qué hora te acuestas normalmente?",
+        ja: "普段何時に寝ますか？"
+      },
+      {
+        es: "¿A qué hora te duchas normalmente?",
+        ja: "普段何時にシャワーを浴びますか？"
       },
       {
         es: "¿Dónde está tu universidad?",
@@ -67,12 +100,28 @@
         ja: "あなたの誕生日はいつですか？"
       },
       {
-        es: "¿Cómo eres tú / es tu amigo, tu madre, etc.?",
-        ja: "あなた（友達やお母さん）はどんな人ですか？"
+        es: "¿Cómo eres tú?",
+        ja: "あなたはどんな人ですか？"
       },
       {
-        es: "¿Qué hay en tu casa / dormitorio / salón?",
-        ja: "あなたの家／部屋／リビングには何がありますか？"
+        es: "¿Cómo es tu amigo?",
+        ja: "あなたの友達はどんな人ですか？"
+      },
+      {
+        es: "¿Cómo es tu madre?",
+        ja: "あなたのお母さんはどんな人ですか？"
+      },
+      {
+        es: "¿Qué hay en tu casa?",
+        ja: "あなたの家には何がありますか？"
+      },
+      {
+        es: "¿Qué hay en tu dormitorio?",
+        ja: "あなたの部屋には何がありますか？"
+      },
+      {
+        es: "¿Qué hay en tu salón?",
+        ja: "あなたのリビングには何がありますか？"
       },
       {
         es: "¿Cómo se dice ______ en español?",
@@ -83,8 +132,16 @@
         ja: "あなたの名前／名字はどう書きますか？"
       },
       {
-        es: "¿Dónde tomas café/ te lavas los dientes / escuchas música?",
-        ja: "どこでコーヒーを飲みますか／歯を磨きますか／音楽を聴きますか？"
+        es: "¿Dónde tomas café?",
+        ja: "どこでコーヒーを飲みますか？"
+      },
+      {
+        es: "¿Dónde te lavas los dientes?",
+        ja: "どこで歯を磨きますか？"
+      },
+      {
+        es: "¿Dónde escuchas música?",
+        ja: "どこで音楽を聴きますか？"
       },
       {
         es: "¿Cuándo vienes a la universidad?",
@@ -95,19 +152,38 @@
         ja: "どうやって家に帰りますか？"
       },
       {
-        es: "¿De dónde es Pablo Picasso/ William Shakespeare/ Umeko Tsuda?",
-        ja: "パブロ・ピカソ／ウィリアム・シェイクスピア／津田梅子はどこの出身ですか？"
+        es: "¿De dónde es Pablo Picasso?",
+        ja: "パブロ・ピカソはどこの出身ですか？"
+      },
+      {
+        es: "¿De dónde es William Shakespeare?",
+        ja: "ウィリアム・シェイクスピアはどこの出身ですか？"
+      },
+      {
+        es: "¿De dónde es Umeko Tsuda?",
+        ja: "津田梅子はどこの出身ですか？"
       }
     ];
+
+    let showTranslation = false;
 
     function generateQuestion() {
       const random = questions[Math.floor(Math.random() * questions.length)];
       document.getElementById("question").textContent = "📘 " + random.es;
-      document.getElementById("translation").textContent = "🇯🇵 " + random.ja;
+      const translationDiv = document.getElementById("translation");
+      translationDiv.textContent = "🇯🇵 " + random.ja;
+      translationDiv.style.display = showTranslation ? "block" : "none";
 
       const utterance = new SpeechSynthesisUtterance(random.es);
       utterance.lang = 'es-ES';
       speechSynthesis.speak(utterance);
+    }
+
+    function toggleTranslation() {
+      showTranslation = !showTranslation;
+      const translationDiv = document.getElementById("translation");
+      translationDiv.style.display = showTranslation ? "block" : "none";
+      document.getElementById("toggle-translation").textContent = showTranslation ? "日本語訳を隠す" : "日本語訳を表示";
     }
   </script>
 </body>
