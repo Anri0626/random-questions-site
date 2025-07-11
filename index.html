@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Preguntas aleatorias</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; padding: 30px; }
+    button { padding: 10px 20px; font-size: 16px; }
+    #question { font-size: 24px; margin: 20px; }
+  </style>
+</head>
+<body>
+  <h1>ランダム会話練習（スペイン語）</h1>
+  <div id="question">ボタンを押して質問を表示！</div>
+  <button onclick="generateQuestion()">🎲 質問を表示＆音声再生</button>
+
+  <script>
+    const questions = [
+      "¿Cómo se llama tu profesor/a de español?",
+      "¿Cuántos años tienes / tiene tu hermano/a, padre, madre, etc.?",
+      "¿Dónde vives / viven tus primos, padres, etc.?",
+      "¿Qué haces los viernes / sábados / domingos, etc.?",
+      "¿Qué te gusta hacer los fines de semana?",
+      "¿Qué lenguas hablas?",
+      "¿Qué hora es?",
+      "¿A qué hora te levantas / te acuestas / te duchas normalmente?",
+      "¿Dónde está tu universidad?",
+      "¿Dónde comes normalmente y con quién?",
+      "¿Qué sabes hacer?",
+      "¿Cuándo es tu cumpleaños?",
+      "¿Cómo eres tú / es tu amigo, tu madre, etc.?",
+      "¿Qué hay en tu casa / dormitorio / salón?",
+      "¿Cómo se dice ___ en español?",
+      "¿Cómo se escribe tu nombre/ apellido?",
+      "¿Dónde tomas café/ te lavas los dientes / escuchas música?",
+      "¿Cuándo vienes a la universidad?",
+      "¿Cómo vuelves a casa?",
+      "¿De dónde es Pablo Picasso/ William Shakespeare/ Umeko Tsuda?"
+    ];
+
+    function generateQuestion() {
+      const randomIndex = Math.floor(Math.random() * questions.length);
+      const question = questions[randomIndex];
+      document.getElementById('question').textContent = question;
+
+      const utterance = new SpeechSynthesisUtterance(question);
+      utterance.lang = 'es-ES'; // スペイン語
+      speechSynthesis.speak(utterance);
+    }
+  </script>
+</body>
+</html>
